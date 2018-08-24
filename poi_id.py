@@ -3,9 +3,9 @@
 import sys
 import pickle
 import pandas as pd
-sys.path.append("/tools/")
+sys.path.append("../tools/")
 
-from tools.feature_format import featureFormat, targetFeatureSplit
+from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
 
 ### Task 1: Select what features you'll use.
@@ -52,8 +52,8 @@ labels, features = targetFeatureSplit(data)
 
 # Provided to give you a starting point. Try a variety of classifiers.
 from sklearn.ensemble import RandomForestClassifier
-clf = RandomForestClassifier(random_state=23445, criterion="entropy")
-
+clf = AdaBoostClassifier(random_state=2324, learning_rate=0.05)
+#clf = RandomForestClassifier(random_state=23445, n_estimators=20)
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
@@ -63,8 +63,24 @@ clf = RandomForestClassifier(random_state=23445, criterion="entropy")
 
 # Example starting point. Try investigating other evaluation techniques!
 from sklearn.cross_validation import train_test_split
-features_train, features_test, labels_train, labels_test = \
-    train_test_split(features, labels, test_size=0.3, random_state=42)
+from sklearn.cross_validation import KFold
+features_train, features_test, labels_train, labels_test = train_test_split(features, 
+																							labels, 
+																							test_size=0.1, 
+																							random_state=42)
+kf=KFold(len(labels),3, shuffle=True, random_state=0 )
+for train_indices, test_indices in kf:
+    features_train= [features[ii] for ii in train_indices]
+    features_test= [features[ii] for ii in test_indices]
+    labels_train=[labels[ii] for ii in train_indices]
+    labels_test=[labels[ii] for ii in test_indices]
+
+clf.fit(features_train,labels_train)
+pred = clf.predict(features_test)
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+print("precision:", precision_score(labels_test, pred))
+print("recall:", recall_score(labels_test, pred))
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
