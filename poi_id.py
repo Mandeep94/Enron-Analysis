@@ -39,7 +39,7 @@ my_dataset = data.T.to_dict()
 ### Extract features and labels from dataset for local testing
 features_list.extend(['loan_advances', 'restricted_stock_deferred', 
              'director_fees', 'deferral_payments' , 'deferred_income',
-             'total_payments', 'salary', 'bonus', 'shared_receipt_with_poi_pp', 'long_term_incentive'])
+             'total_payments', 'salary', 'bonus', 'total_stock_value', 'long_term_incentive'])
 
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
