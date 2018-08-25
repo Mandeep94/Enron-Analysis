@@ -11,7 +11,7 @@ from tester import dump_classifier_and_data
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
-features_list = ['poi', 'bonus'] # You will need to use more features
+features_list = ['poi'] # You will need to use more features
 
 ### Load the dictionary containing the dataset
 with open("final_project_dataset.pkl", "rb") as data_file:
@@ -37,9 +37,9 @@ data=data.fillna(0.0)
 my_dataset = data.T.to_dict()
 
 ### Extract features and labels from dataset for local testing
-features_list.extend(['total_payments', 'expenses', 
-             'from_this_person_to_poi_pp', 'from_poi_to_this_person_pp' , 
-             'exercised_stock_options'])
+features_list.extend(['loan_advances', 'restricted_stock_deferred', 
+             'director_fees', 'deferral_payments' , 'deferred_income',
+             'total_payments', 'salary', 'bonus', 'shared_receipt_with_poi_pp', 'long_term_incentive'])
 
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
@@ -52,7 +52,7 @@ labels, features = targetFeatureSplit(data)
 
 # Provided to give you a starting point. Try a variety of classifiers.
 from sklearn.ensemble import RandomForestClassifier
-clf = AdaBoostClassifier(random_state=2324, learning_rate=0.05)
+clf = RandomForestClassifier(criterion='entropy', n_estimators=25, random_state=1423)
 #clf = RandomForestClassifier(random_state=23445, n_estimators=20)
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
@@ -63,17 +63,11 @@ clf = AdaBoostClassifier(random_state=2324, learning_rate=0.05)
 
 # Example starting point. Try investigating other evaluation techniques!
 from sklearn.cross_validation import train_test_split
-from sklearn.cross_validation import KFold
+
 features_train, features_test, labels_train, labels_test = train_test_split(features, 
-																							labels, 
-																							test_size=0.1, 
-																							random_state=42)
-kf=KFold(len(labels),3, shuffle=True, random_state=0 )
-for train_indices, test_indices in kf:
-    features_train= [features[ii] for ii in train_indices]
-    features_test= [features[ii] for ii in test_indices]
-    labels_train=[labels[ii] for ii in train_indices]
-    labels_test=[labels[ii] for ii in test_indices]
+                                                                            labels, 
+                                                                            test_size=0.1, 
+                                                                            random_state=45)
 
 clf.fit(features_train,labels_train)
 pred = clf.predict(features_test)
