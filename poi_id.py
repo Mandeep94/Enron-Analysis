@@ -38,8 +38,7 @@ my_dataset = data.T.to_dict()
 
 ### Extract features and labels from dataset for local testing
 features_list.extend(['loan_advances', 'restricted_stock_deferred', 
-             'director_fees', 'deferral_payments' , 'deferred_income',
-             'total_payments', 'salary', 'bonus', 'total_stock_value', 'long_term_incentive'])
+             'deferral_payments' , 'total_payments', 'salary'])
 
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
@@ -51,9 +50,11 @@ labels, features = targetFeatureSplit(data)
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
 # Provided to give you a starting point. Try a variety of classifiers.
-from sklearn.ensemble import RandomForestClassifier
-clf = RandomForestClassifier(criterion='entropy', n_estimators=25, random_state=1423)
-#clf = RandomForestClassifier(random_state=23445, n_estimators=20)
+from sklearn.ensemble import AdaBoostClassifier
+
+clf = AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+          learning_rate=0.1, n_estimators=20, random_state=1000)
+#clf = RandomForestClassifier(random_state=2344, criterion='gini',n_estimators=25)
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
@@ -62,7 +63,7 @@ clf = RandomForestClassifier(criterion='entropy', n_estimators=25, random_state=
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
 # Example starting point. Try investigating other evaluation techniques!
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 
 features_train, features_test, labels_train, labels_test = train_test_split(features, 
                                                                             labels, 
